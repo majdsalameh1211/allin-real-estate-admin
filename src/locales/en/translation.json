@@ -1,0 +1,335 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "portfolio": "Projects",
+    "services": "Services",
+    "testimonials": "Reviews",
+    "contact": "Contact"
+  },
+  "hero": {
+    "tagline": "In Real Estate, We Think Differently",
+    "subtitle": "Curated luxury homes with white-glove service",
+    "location": "Nof HaGalil, Israel",
+    "cta1": "Request Consultation",
+    "cta2": "View Our Projects",
+    "scroll": "Scroll to explore"
+  },
+  "about": {
+    "title": "Our Story",
+    "story1": "At ALL IN, real estate isn't just about property. It's about people, moments, and decisions that shape lives.",
+    "story2": "We built something different. Not a brokerage. Not an agency. But a space where people feel safe to think clearly — and choose boldly.",
+    "story3": "Every deal begins with a question: 'What do you really need right now?' And ends only when the answer feels deeply right — financially and emotionally.",
+    "teamTitle": "The People Behind ALL IN",
+    "meetTeamButton": "Meet Our Full Team",
+    "team": {
+      "fares": {
+        "name": "Fares Jabbour",
+        "title": "Founder | Strategic Advisor & Asset Specialist",
+        "quote": "I'm not here to close fast. I'm here to make sure it feels right.",
+        "bio": "Fares is the heart of ALL IN's mindset. With years of experience, sharp emotional intelligence, and a calm energy that grounds clients — he ensures every deal feels human, not rushed."
+      },
+      "ward": {
+        "name": "Ward Jabbour",
+        "title": "Operations Lead | Client Journey Manager",
+        "quote": "I don't show properties. I show up for people.",
+        "bio": "Ward is the structure, the rhythm, and the reassurance. He manages timelines, filters pressure, and makes sure every client moves through the process with clarity."
+      }
+    },
+    "approachTitle": "What Sets Us Apart",
+    "approach": {
+      "discretion": {
+        "title": "Discretion",
+        "desc": "Your privacy is our priority"
+      },
+      "expertise": {
+        "title": "Expertise",
+        "desc": "Deep market knowledge"
+      },
+      "dedication": {
+        "title": "Dedication",
+        "desc": "Committed to your success"
+      }
+    }
+  },
+  "portfolio": {
+    "title": "Featured Properties",
+    "filters": {
+      "all": "All",
+      "forSale": "For Sale",
+      "forRent": "For Rent",
+      "sold": "Sold"
+    },
+    "viewDetails": "View Details",
+    "viewAllProperties": "View All Properties",
+    "badges": {
+      "new": "NEW",
+      "sold": "SOLD",
+      "exclusive": "EXCLUSIVE"
+    }
+  },
+  "services": {
+    "title": "Services & Expertise",
+    "subtitle": "Comprehensive solutions for every real estate need",
+    "exploreCourses": "Explore Our Courses",
+    "items": {
+      "selling": {
+        "title": "Home Selling",
+        "desc": "Cinematic media production, strategic marketing, and expert negotiation"
+      },
+      "acquisition": {
+        "title": "Property Acquisition",
+        "desc": "Deep intake sessions, curated options, and personalized guidance"
+      },
+      "land": {
+        "title": "Land Investment",
+        "desc": "Future development potential with comprehensive due diligence"
+      },
+      "rentals": {
+        "title": "Luxury Rentals",
+        "desc": "Verified listings with transparent contracts and ongoing support"
+      },
+      "marketing": {
+        "title": "Property Marketing",
+        "desc": "Cinematic visuals and targeted campaigns that tell your story"
+      },
+      "consulting": {
+        "title": "Personal Consulting",
+        "desc": "One-on-one strategic sessions with honest, pressure-free advice"
+      }
+    },
+    "explore": "Explore"
+  },
+  "testimonials": {
+    "title": "Client Success",
+    "bigStat": "₪180M+",
+    "bigStatDesc": "in Property Value",
+    "stats": {
+      "transactions": "Transactions",
+      "satisfaction": "Satisfaction",
+      "rating": "Rating"
+    },
+    "quotes": [
+      {
+        "text": "They didn't just offer me options. They helped me figure out what I actually want.",
+        "author": "Daniel R.",
+        "location": "Nof HaGalil"
+      },
+      {
+        "text": "I wasn't sold to. I was seen. That changed everything.",
+        "author": "Haneen M.",
+        "location": "Nazareth"
+      },
+      {
+        "text": "ALL IN didn't just list my property. They turned it into a story buyers wanted to be part of.",
+        "author": "Sarah K.",
+        "location": "Haifa"
+      },
+      {
+        "text": "I never felt pushed. Just heard. And that made all the difference.",
+        "author": "Ahmed T.",
+        "location": "Yafia"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Let's Start a Conversation",
+    "subtitle": "Ready to find your next home?",
+    "form": {
+      "sending": "Sending...",
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "interest": "I'm interested in",
+      "interestOptions": {
+        "buying": "Buying",
+        "selling": "Selling",
+        "renting": "Renting",
+        "land": "Land Investment",
+        "consulting": "Consulting"
+      },
+      "message": "Message",
+      "submit": "Send Message",
+      "success": "Message Sent Successfully!"
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": "Nof HaGalil, Israel (Mol Harem Center)",
+      "phone": "04-6666599",
+      "email": "info@allinrealestate.net",
+      "hours": "Sunday - Friday | 09:00 - 18:00"
+    }
+  },
+  "footer": {
+    "tagline": "In Real Estate, We Don't Just Close Deals. We Craft Decisions You Can Live In.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "cookies": "Cookie Policy"
+    },
+    "copyright": "© 2024 ALL IN Real Estate. All rights reserved.",
+    "social": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn"
+    }
+  },
+  "team": {
+    "title": "Meet Our Full Team",
+    "subtitle": "The dedicated professionals behind ALL IN Real Estate"
+  },
+  "courses": {
+    "title": "Educational Courses",
+    "subtitle": "Expand your real estate knowledge with our expert-led masterclasses."
+  },
+  "legal": {
+    "lastUpdated": "Last Updated",
+    "contact": {
+      "title": "Contact Us",
+      "text": "If you have any questions about this policy, please contact us at:",
+      "phone": "Phone"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": {
+        "title": "Introduction",
+        "text": "At ALL IN Real Estate, we are committed to protecting your privacy and personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our website and services."
+      },
+      "collect": {
+        "title": "Information We Collect",
+        "intro": "We collect the following types of information:",
+        "item1": "Personal Information: Name, email address, phone number, and contact details",
+        "item2": "Property Preferences: Your property search criteria, budget, and location preferences",
+        "item3": "Transaction Data: Details about properties you've viewed, inquired about, or purchased",
+        "item4": "Technical Data: IP address, browser type, device information, and cookies",
+        "item5": "Communication Records: Emails, messages, and consultation notes"
+      },
+      "use": {
+        "title": "How We Use Your Information",
+        "item1": "To provide real estate services and property recommendations",
+        "item2": "To communicate with you about properties, consultations, and appointments",
+        "item3": "To improve our website, services, and user experience",
+        "item4": "To send marketing communications (with your consent)",
+        "item5": "To comply with legal obligations and prevent fraud"
+      },
+      "sharing": {
+        "title": "Data Sharing",
+        "text": "We do not sell your personal information. We may share your data with:",
+        "item1": "Service providers who assist us (e.g., email services, analytics tools)",
+        "item2": "Legal authorities when required by law",
+        "item3": "Professional partners (lawyers, notaries) involved in your transaction, with your consent"
+      },
+      "security": {
+        "title": "Data Security",
+        "text": "We implement industry-standard security measures to protect your personal information, including encryption, secure servers, and restricted access to sensitive data."
+      },
+      "rights": {
+        "title": "Your Rights",
+        "item1": "Access: You can request a copy of your personal data",
+        "item2": "Correction: You can update or correct inaccurate information",
+        "item3": "Deletion: You can request deletion of your data (subject to legal requirements)",
+        "item4": "Objection: You can object to certain uses of your data, including marketing"
+      }
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "text": "By accessing and using the ALL IN Real Estate website, you agree to comply with these Terms of Use. If you do not agree, please do not use our services."
+      },
+      "services": {
+        "title": "Our Services",
+        "text": "ALL IN Real Estate provides luxury real estate brokerage services, including property sales, purchases, rentals, land investments, and consultation services in Nof HaGalil and surrounding areas."
+      },
+      "listings": {
+        "title": "Property Listings Disclaimer",
+        "text": "All property information is provided in good faith and is believed to be accurate. However, we do not guarantee the accuracy, completeness, or availability of any listing. Prices, specifications, and availability are subject to change without notice."
+      },
+      "conduct": {
+        "title": "Prohibited Conduct",
+        "item1": "Using the website for any illegal or unauthorized purpose",
+        "item2": "Attempting to gain unauthorized access to our systems",
+        "item3": "Uploading malicious software or harmful content",
+        "item4": "Misrepresenting your identity or affiliation"
+      },
+      "ip": {
+        "title": "Intellectual Property",
+        "text": "All content on this website, including text, images, logos, videos, and designs, is the property of ALL IN Real Estate and protected by copyright law. You may not reproduce, distribute, or use any content without written permission."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "text": "ALL IN Real Estate is not liable for any indirect, incidental, or consequential damages arising from your use of our website or services. We provide information 'as is' without warranties of any kind."
+      },
+      "law": {
+        "title": "Governing Law",
+        "text": "These Terms of Use are governed by the laws of the State of Israel. Any disputes shall be resolved in the courts of Israel."
+      }
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "what": {
+        "title": "What Are Cookies?",
+        "text": "Cookies are small text files stored on your device when you visit our website. They help us improve your browsing experience, analyze site traffic, and personalize content."
+      },
+      "types": {
+        "title": "Types of Cookies We Use",
+        "essential": {
+          "title": "Essential Cookies",
+          "text": "These cookies are necessary for the website to function properly. They enable basic features like page navigation, language preferences, and security."
+        },
+        "analytics": {
+          "title": "Analytics Cookies",
+          "text": "We use analytics cookies (such as Google Analytics) to understand how visitors interact with our website, which pages are most popular, and how we can improve user experience."
+        },
+        "marketing": {
+          "title": "Marketing Cookies",
+          "text": "These cookies track your browsing activity to show you relevant advertisements on social media platforms and other websites."
+        }
+      },
+      "thirdparty": {
+        "title": "Third-Party Cookies",
+        "item1": "Google Analytics: For website traffic analysis",
+        "item2": "Facebook Pixel: For targeted advertising on Facebook and Instagram",
+        "item3": "Social Media Widgets: For sharing content on social platforms"
+      },
+      "manage": {
+        "title": "Managing Cookies",
+        "text": "You can control and delete cookies through your browser settings. However, disabling certain cookies may affect website functionality and your user experience."
+      }
+    }
+  },
+  "projectDetails": {
+    "selectProperty": "Select a property to view details",
+    "untitledProperty": "Untitled Property",
+    "locationNotSpecified": "Location not specified",
+    "beds": "Beds",
+    "baths": "Baths",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "sold": "Sold",
+    "description": "Description",
+    "features": "Features",
+    "contact": "Contact",
+    "save": "Save",
+    "perMonth": "/mo",
+    "moreImages": "more"
+  },
+  "projects": {
+  "title": "Our Properties",
+  "selectPropertyOnMap": "Select a property to view location",
+  "loading": "Loading properties...",
+  "error": "Failed to load properties. Please try again later.",
+  "retry": "Retry",
+  "noProperties": "No properties found in this category.",
+  "filters": {
+    "all": "All Properties",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "sold": "Sold"
+  },
+  "toggles": {
+    "map": "Map",
+    "details": "Details"
+  }
+}
+}

@@ -1,0 +1,486 @@
+/* ========================================
+   NAVBAR - Light Theme with Luxury Design
+   ======================================== */
+
+/* Main Navbar Container */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(26, 20, 16, 0.7); /* Dark brown with transparency */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+  
+  /* Responsive height - bigger on large screens */
+  height: 80px;
+  
+  /* Subtle gold border at bottom */
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+/* Scrolled state - more opaque for better readability */
+.navbar-scrolled {
+  background-color: rgba(26, 20, 16, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Container with max-width */
+.navbar-container {
+  max-width: 1400px; /* Larger max-width for bigger screens */
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ========================================
+   LOGO SECTION
+   ======================================== */
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.navbar-logo-image {
+  height: 2.5rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.navbar-logo-text {
+  display: flex;
+  gap: 0.5rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.logo-all {
+  color: #D4AF37; /* Gold */
+}
+
+.logo-in {
+  color: #FAF8F3; /* Cream/white for contrast on dark background */
+}
+
+/* ========================================
+   DESKTOP NAVIGATION ITEMS
+   ======================================== */
+
+.navbar-items {
+  display: none; /* Hidden on mobile by default */
+  align-items: center;
+  gap: 2rem;
+}
+
+.navbar-item-wrapper {
+  position: relative;
+}
+
+.navbar-item {
+  background: none;
+  border: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #FAF8F3; /* Cream/white text on dark background */
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.navbar-item:hover {
+  color: #D4AF37; /* Gold on hover */
+}
+
+.navbar-item-active {
+  color: #D4AF37; /* Gold when active */
+  font-weight: 600;
+}
+
+/* Animated underline for active section */
+.navbar-underline {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D4AF37, #F4E5B8);
+  border-radius: 2px;
+}
+
+/* ========================================
+   RIGHT SIDE (Language + Mobile Toggle)
+   ======================================== */
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Mobile Menu Toggle Button */
+.navbar-mobile-toggle {
+  display: flex; /* Visible on mobile */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+/* Hamburger Icon */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 28px;
+  height: 22px;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #FAF8F3; /* Cream/white on dark background */
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Hamburger animation when open */
+.hamburger-open span:nth-child(1) {
+  transform: rotate(45deg) translateY(10px);
+  background-color: #D4AF37; /* Gold when open */
+}
+
+.hamburger-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-open span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-10px);
+  background-color: #D4AF37; /* Gold when open */
+}
+
+/* ========================================
+   MOBILE MENU
+   ======================================== */
+
+/* Backdrop overlay */
+.mobile-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(26, 20, 16, 0.7);
+  z-index: 998;
+  backdrop-filter: blur(4px);
+}
+
+/* Mobile menu panel */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 85vw;
+  background: linear-gradient(135deg, #2C2416 0%, #1A1410 100%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile menu header */
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.mobile-menu-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-menu-logo-image {
+  height: 2rem;
+  width: auto;
+}
+
+.mobile-menu-logo-text {
+  display: flex;
+  gap: 0.35rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Close button */
+.mobile-menu-close {
+  background: none;
+  border: none;
+  color: #FAF8F3;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.mobile-menu-close:hover {
+  color: #D4AF37;
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Mobile menu items container */
+.mobile-menu-items {
+  flex: 1;
+  padding: 2rem 0;
+  overflow-y: auto;
+}
+
+/* Individual mobile menu item */
+.mobile-menu-item {
+  position: relative;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #FAF8F3;
+  text-align: left;
+  padding: 1.25rem 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-menu-item:hover {
+  color: #D4AF37;
+  background-color: rgba(212, 175, 55, 0.05);
+}
+
+.mobile-menu-item-active {
+  color: #D4AF37;
+  font-weight: 600;
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+/* Active indicator (animated gold bar) */
+.mobile-menu-indicator {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  background: linear-gradient(180deg, #D4AF37, #F4E5B8);
+  border-radius: 4px 0 0 4px;
+}
+
+/* Mobile menu footer */
+.mobile-menu-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.mobile-menu-footer-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.875rem;
+  color: #C5BDB0;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Tablet and up - show desktop nav, hide mobile toggle */
+@media (min-width: 768px) {
+  .navbar {
+    height: 70px; /* Reduced for desktop - more compact */
+  }
+
+  .navbar-items {
+    display: flex;
+  }
+
+  .navbar-mobile-toggle {
+    display: none;
+  }
+
+  .navbar-logo-image {
+    height: 2.25rem; /* Slightly smaller logo */
+  }
+
+  .navbar-logo-text {
+    font-size: 1.375rem; /* Proportional text */
+  }
+
+  .navbar-item {
+    font-size: 1rem;
+  }
+
+  .navbar-container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Large tablets and small laptops */
+@media (min-width: 1024px) {
+  .navbar {
+    height: 75px; /* Still compact */
+  }
+
+  .navbar-logo-image {
+    height: 2.5rem;
+  }
+
+  .navbar-logo-text {
+    font-size: 1.5rem;
+  }
+
+  .navbar-items {
+    gap: 2rem;
+  }
+
+  .navbar-item {
+    font-size: 1.0625rem;
+  }
+}
+
+/* Large screens - slightly bigger but still compact */
+@media (min-width: 1280px) {
+  .navbar {
+    height: 80px; /* Maximum height for desktop */
+  }
+
+  .navbar-container {
+    max-width: 1600px;
+    padding: 0 3rem;
+  }
+
+  .navbar-logo-image {
+    height: 2.75rem;
+  }
+
+  .navbar-logo-text {
+    font-size: 1.625rem;
+  }
+
+  .navbar-items {
+    gap: 2.5rem;
+  }
+
+  .navbar-item {
+    font-size: 1.125rem;
+  }
+}
+
+/* Extra large screens - keep it reasonable */
+@media (min-width: 1536px) {
+  .navbar {
+    height: 85px; /* Maximum height - stays compact */
+  }
+
+  .navbar-logo-image {
+    height: 3rem;
+  }
+
+  .navbar-logo-text {
+    font-size: 1.75rem;
+  }
+
+  .navbar-items {
+    gap: 3rem;
+  }
+
+  .navbar-item {
+    font-size: 1.25rem;
+  }
+}
+
+/* Small mobile - adjust spacing */
+@media (max-width: 375px) {
+  .navbar {
+    height: 70px;
+  }
+
+  .navbar-container {
+    padding: 0 1rem;
+  }
+
+  .navbar-logo-image {
+    height: 2rem;
+  }
+
+  .navbar-logo-text {
+    font-size: 1.25rem;
+  }
+
+  .mobile-menu {
+    width: 280px;
+  }
+
+  .mobile-menu-item {
+    font-size: 1.25rem;
+    padding: 1rem 1.5rem;
+  }
+}
+
+/* ========================================
+   SMOOTH SCROLLING & ACCESSIBILITY
+   ======================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+.navbar-item:focus,
+.mobile-menu-item:focus,
+.mobile-menu-close:focus,
+.navbar-mobile-toggle:focus {
+    outline: none !important;
+    /*
+  outline: 2px solid #D4AF37;
+  outline-offset: 4px;
+  border-radius: 4px;
+  */
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

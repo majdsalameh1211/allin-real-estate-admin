@@ -1,0 +1,38 @@
+/* src/pages/admin/CourseForm/CourseForm.css */
+
+/* Reusing common admin form styles plus specific tweaks */
+.image-preview-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.image-preview-large {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.image-drop-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  min-height: 200px;
+  justify-content: center;
+}
+
+.image-drop-zone:hover {
+  border-color: #d4af37;
+  background: #fefce8;
+}

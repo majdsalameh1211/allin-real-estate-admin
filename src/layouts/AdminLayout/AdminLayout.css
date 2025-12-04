@@ -1,0 +1,509 @@
+/* src/layouts/AdminLayout.css */
+
+/* --- ROOT VARIABLES --- */
+:root {
+  --admin-bg: #f3f4f6;
+  --sidebar-bg: #1a1410;
+  /* Dark Luxury */
+  --sidebar-w: 260px;
+  --sidebar-w-collapsed: 72px;
+  --gold: #c19a5b;
+  --gold-dim: rgba(193, 154, 91, 0.15);
+  --text-light: #e5e7eb;
+  --text-dim: #9ca3af;
+  --header-h-mobile: 64px;
+    --sidebar-w: 260px;
+  --sidebar-w-collapsed: 100px;
+}
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* =========================================
+   1. MOBILE HEADER
+   ========================================= */
+.admin-mobile-header {
+  display: none;
+  /* Hidden on Desktop */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h-mobile);
+  background: white;
+  z-index: 50;
+  padding: 0 1rem;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.mobile-toggle {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  color: #1a1410;
+  cursor: pointer;
+}
+
+.mobile-logo img {
+  height: 32px;
+  width: auto;
+}
+
+/* Mobile Avatar Top Right */
+.mobile-user .mini-avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+}
+
+.mobile-user .mini-avatar-text {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--sidebar-bg);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* =========================================
+   2. SIDEBAR (Desktop)
+   ========================================= */
+.admin-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  color: var(--text-light);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Collapsed State */
+.admin-sidebar.collapsed {
+  width: var(--sidebar-w-collapsed);
+}
+
+/* --- SIDEBAR HEADER --- */
+.sidebar-header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: opacity 0.2s;
+}
+
+.sidebar-logo {
+  height: 40px;
+  width: auto;
+}
+
+/* Hide Logo when collapsed to prevent overlap with button */
+.admin-sidebar.collapsed .logo-container {
+  display: none;
+}
+
+/* Toggle Button (Always on Top) */
+.collapse-btn {
+  background: var(--gold-dim);
+  border: none;
+  color: var(--gold);
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  
+  /* --- CENTERING MAGIC --- */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Horizontally centers the SVG */
+  padding: 0;              /* CRITICAL: Removes padding that offsets the icon */
+  
+  transition: all 0.3s ease;
+  
+  /* Size when Sidebar is Expanded */
+  width: 32px;
+  height: 32px;
+}
+
+.collapse-btn:hover {
+  background: var(--gold);
+  color: white;
+}
+
+.collapse-btn svg {
+  display: block; /* Removes any weird inline spacing behavior */
+}
+
+/* Expanded State - Button stays small on the right */
+.sidebar-header {
+  justify-content: space-between;
+}
+
+/* Center button when collapsed */
+.admin-sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding: 0;
+}
+
+/* Make button wider when sidebar is collapsed */
+.admin-sidebar.collapsed .collapse-btn {
+  width: 80%;       /* Button takes 80% of the sidebar width */
+  height: 40px;     /* Taller click area */
+  margin: 0 auto;   /* Centers the button itself inside the sidebar */
+}
+
+/* --- NAVIGATION --- */
+.sidebar-nav {
+  flex: 1;
+  padding: 1.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-text {
+  font-weight: 500;
+  font-size: 0.95rem;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+/* Hover & Active States */
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.nav-item.active {
+  background: var(--gold);
+  color: #1a1410;
+  /* Dark text on gold */
+  box-shadow: 0 4px 12px rgba(193, 154, 91, 0.4);
+}
+
+.nav-item.active .nav-icon {
+  color: #1a1410;
+}
+
+/* Collapsed Nav Styling */
+.admin-sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.875rem 0;
+}
+
+.admin-sidebar.collapsed .nav-text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+/* Tooltips */
+.nav-tooltip {
+  position: absolute;
+  left:auto;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  color: #1a1410;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-left: 0px;
+  transform: translateY(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 9999;
+}
+
+.nav-item:hover .nav-tooltip {
+  opacity: 1;
+}
+
+/* --- FOOTER: USER & LOGOUT --- */
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-sidebar.collapsed .sidebar-footer {
+  flex-direction: column;
+  padding: 1rem 0.5rem;
+  gap: 1rem;
+}
+
+/* User Card */
+.user-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  overflow: hidden;
+}
+
+.mini-avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+}
+
+.mini-avatar-text {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid var(--gold);
+}
+
+.mini-user-info {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.mini-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+}
+
+.mini-role {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.admin-sidebar.collapsed .mini-user-info {
+  display: none;
+}
+
+/* Logout Icon Btn */
+.footer-logout {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  /* Red */
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-logout:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Hide logout button when collapsed */
+.admin-sidebar.collapsed .footer-logout {
+  display: none;
+}
+
+/* =========================================
+   3. MAIN CONTENT AREA
+   ========================================= */
+.admin-main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 2rem;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: calc(100% - var(--sidebar-w));
+}
+
+.admin-main.expanded {
+  margin-left: var(--sidebar-w-collapsed);
+  width: calc(100% - var(--sidebar-w-collapsed));
+}
+
+/* --- SEARCH BAR --- */
+.search-bar-container {
+  margin-bottom: 2rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  max-width: 500px;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 3rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s;
+  background: white;
+}
+
+.search-input-wrapper input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px var(--gold-dim);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.clear-search {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+/* =========================================
+   4. RESPONSIVE / MOBILE
+   ========================================= */
+@media (max-width: 768px) {
+  .admin-mobile-header {
+    display: flex;
+    /* Show Header */
+  }
+
+    .admin-mobile-header .mobile-user {
+    display: none !important;
+  }
+
+  .admin-sidebar {
+    transform: translateX(-100%);
+    /* Hide Sidebar by default */
+    width: 260px;
+    /* Fixed width on mobile */
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Reset Main Margin */
+  .admin-main,
+  .admin-main.expanded {
+    margin-left: 0;
+    width: 100%;
+    margin-top: var(--header-h-mobile);
+    padding: 1rem;
+  }
+
+  /* Hide Desktop Elements */
+  .desktop-only {
+    display: none !important;
+    width: 100%;
+  }
+
+  /* Overlay */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .sidebar-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Adjust Sidebar Header for mobile */
+  .sidebar-header {
+    justify-content: center;
+  }
+}
+/* =============================
+   HIDE SIDEBAR SCROLLBAR
+   ============================= */
+.sidebar-nav {
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;   /* Edge / IE */
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;              /* Chrome / Safari */
+}
+.admin-layout,
+.admin-sidebar,
+.sidebar-nav {
+  overflow-x: hidden !important;   /* Disable left-right scrolling */
+}
