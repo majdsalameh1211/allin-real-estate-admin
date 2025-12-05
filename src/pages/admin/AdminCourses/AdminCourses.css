@@ -10,31 +10,42 @@
 .link-text:hover {
   text-decoration: underline;
 }
+/* Mobile Cards Grid */
+.cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* ✅ Spacing between cards */
+  padding-bottom: 3rem;
+}
 
-/* Course Card Specifics */
+/* Individual Card */
 .course-card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: all 0.3s ease;
+  border: 1px solid #f3f4f6;
+  
+  /* 🔴 FORCE SPACING if gap isn't supported by older browsers */
+  margin-bottom: 2rem; 
+  width: 100%;
 }
 
 .course-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
+.course-card:last-child {
+  margin-bottom: 0;
+}
 
+/* Price Badge on Card */
 .course-price-badge {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: rgba(212, 175, 55, 0.9);
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  color: #1a1410;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .card-instructor {
@@ -162,4 +173,27 @@
   
   .btn-card-action.btn-edit { color: #3b82f6; }
   .btn-card-action.btn-delete { color: #ef4444; }
+}
+
+/* Status Badges */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-active {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #d1fae5;
+}
+
+.badge-inactive {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
 }

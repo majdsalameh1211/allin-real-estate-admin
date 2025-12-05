@@ -23,9 +23,9 @@ const AdminCourses = () => {
     try {
       setLoading(true);
       console.log('📥 Fetching courses from API...');
-      const data = await getCourses('en');
+      // ✅ FIX: Pass 'null' for limit, and 'true' for includeInactive
+      const data = await getCourses('en', null, true);
       console.log('✅ Courses fetched:', data.length, 'courses');
-      console.log('📊 First course sample:', data[0]);
       setCourses(data);
     } catch (error) {
       toast.error('Failed to fetch courses');
@@ -120,6 +120,7 @@ const AdminCourses = () => {
                   <th>Instructor</th>
                   <th>Duration</th>
                   <th>Price</th>
+                  <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -146,6 +147,11 @@ const AdminCourses = () => {
                           {`${course.currency} ${Number(course.price).toLocaleString()}`}
                         </span>
                       )}
+                    </td>
+                    <td>
+                      <span className={`badge badge-${course.active ? 'active' : 'inactive'}`}>
+                        {course.active ? 'Active' : 'Inactive'}
+                      </span>
                     </td>
                     <td>
                       <div className="action-buttons">
@@ -198,7 +204,12 @@ const AdminCourses = () => {
                 </div>
 
                 <div className="card-content">
-                  <h3 className="card-title">{course.title}</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
+                    <h3 className="card-title">{course.title}</h3>
+                    <span className={`badge badge-${course.active ? 'active' : 'inactive'}`}>
+                      {course.active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
                   <p className="card-instructor">By {course.instructor}</p>
 
                   <div className="card-details">

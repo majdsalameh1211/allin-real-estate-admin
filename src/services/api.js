@@ -1,7 +1,7 @@
 // src/services/api.js
 import axios from 'axios';
-//
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// 
+const API_BASE_URL = import.meta.env.VITE_API_URL ||'http://localhost:5000/api';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -735,10 +735,11 @@ export const closeLead = async (id) => {
  * @param {string} lang - Language code (en, ar, he)
  * @param {number} limit - Optional limit
  */
-export const getCourses = async (lang = 'en', limit = null) => {
+export const getCourses = async (lang = 'en', limit = null, includeInactive = false) => {
   try {
     const params = { lang };
     if (limit) params.limit = limit;
+    if (includeInactive) params.includeInactive = 'true';
 
     const response = await api.get('/courses', { params });
     return response.data;

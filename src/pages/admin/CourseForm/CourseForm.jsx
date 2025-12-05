@@ -305,13 +305,28 @@ const CourseForm = ({ initialData, onSubmit, onCancel }) => {
       {/* Image Upload */}
       <div className="form-section">
         <h3>Thumbnail Image (Optional)</h3>
+
         <div className="form-group">
+
           {imagePreview ? (
             <div className="image-preview-container">
               <img src={imagePreview} alt="Preview" className="image-preview-large" />
-              <button type="button" className="btn-remove-image" onClick={handleRemoveImage}>
-                ✕ Remove
+
+
+
+              <button
+                type="button"
+                className="btn-remove-image"
+                onClick={handleRemoveImage}
+              >
+                {/* SVG for a clean white X */}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
               </button>
+              {/* ----------------------------------------------- */}
+
             </div>
           ) : (
             <div
@@ -340,9 +355,7 @@ const CourseForm = ({ initialData, onSubmit, onCancel }) => {
       </div>
 
       <div className="modal-footer">
-        <button type="button" className="btn-secondary" onClick={onCancel} disabled={submitting}>
-          Cancel
-        </button>
+
         <button type="submit" className="btn-primary" disabled={submitting}>
           {submitting ? 'Saving...' : (initialData ? 'Update Course' : 'Create Course')}
         </button>
