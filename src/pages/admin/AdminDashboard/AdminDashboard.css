@@ -5,22 +5,26 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 80vh;
+  /*  FIX 1: Reduce height so Header + Content doesn't overflow screen */
+  min-height: 80vh; 
   padding: 2rem 1rem;
   background-color: #f9fafb;
+  position: relative; /* Needed for absolute positioning context */
 }
 
 /* --- MAIN CARD --- */
 .main-profile-card {
   width: 100%;
-  max-width: 450px; /* Default for mobile */
+  max-width: 450px;
+  /* Default for mobile */
   background: white;
   border-radius: 24px;
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   border: 1px solid #f3f4f6;
   display: flex;
-  flex-direction: column; /* Stack vertically on mobile */
+  flex-direction: column;
+  /* Stack vertically on mobile */
   transition: max-width 0.3s ease;
 }
 
@@ -47,7 +51,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   font-family: 'Cinzel', serif;
 }
 
@@ -96,7 +100,8 @@
 .profile-details-grid {
   padding: 1.5rem;
   display: flex;
-  flex-direction: column; /* List on mobile */
+  flex-direction: column;
+  /* List on mobile */
   gap: 0;
 }
 
@@ -151,13 +156,20 @@
   color: #6b7280 !important;
 }
 
+/* Add this to hide the ghost element on mobile */
+.desktop-only-spacer {
+  display: none;
+}
+
 .section-divider {
-  display: none; /* Hidden on mobile */
+  display: none;
+  /* Hidden on mobile */
 }
 
 /* --- WORKER ACTION ROW --- */
 .worker-action-row {
-  margin: 0 1.5rem 1.5rem; /* Margin on mobile */
+  margin: 0 1.5rem 1.5rem;
+  /* Margin on mobile */
   padding: 1rem;
   background: #fdfdfd;
   border: 1px solid #e5e7eb;
@@ -241,16 +253,19 @@
    (Where the magic happens)
    ========================================= */
 @media (min-width: 850px) {
-  
+
   .main-profile-card {
-    max-width: 900px; /* Wider card */
-    flex-direction: row; /* Split into Left/Right */
+    max-width: 900px;
+    /* Wider card */
+    flex-direction: row;
+    /* Split into Left/Right */
     align-items: stretch;
   }
 
   /* Left Sidebar (Avatar) */
   .profile-header-section {
-    width: 35%; /* Fixed Sidebar width */
+    width: 35%;
+    /* Fixed Sidebar width */
     border-bottom: none;
     border-right: 1px solid #f3f4f6;
     justify-content: center;
@@ -266,19 +281,22 @@
   /* Right Content Area */
   .profile-content-right {
     width: 65%;
-    justify-content: space-between; /* Push worker row to bottom */
+    justify-content: space-between;
+    /* Push worker row to bottom */
   }
 
   /* Grid Layout for Details */
   .profile-details-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 Columns */
+    grid-template-columns: 1fr 1fr;
+    /* 2 Columns */
     gap: 1rem 2rem;
     padding: 2.5rem;
   }
 
   .detail-item {
-    border-bottom: none; /* Remove borders in grid view */
+    border-bottom: none;
+    /* Remove borders in grid view */
     padding: 0.5rem 0;
   }
 
@@ -294,30 +312,55 @@
   }
 
   .worker-action-row {
-    margin: 2rem 2.5rem; /* Better spacing */
+    margin: 2rem 2.5rem;
+    /* Better spacing */
   }
 }
 
 /* --- MODAL STYLES (Keep as is) --- */
+/* --- MODAL STYLES --- */
+
+/* 1. The Overlay: Fixed to screen, but allows scrolling ITSELF */
 .modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.5);
   backdrop-filter: blur(4px);
+  z-index: 9999;
+  
+  /* Flexbox for centering */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
+  align-items: center; /* Vertical Center */
+  justify-content: center; /* Horizontal Center */
+  
+  /* IMPORTANT: Allow the overlay to scroll if the card is huge */
+  overflow-y: auto; 
+  padding: 1rem; /* Padding prevents card touching edges */
 }
+
+/* 2. The Card: Just a box, no internal scroll needed usually */
 .modal-card {
   background: white;
   width: 100%;
   max-width: 400px;
+  position: relative; /* Stays inside the flex overlay */
+  margin: auto;       /* Helps with centering in scroll mode */
+  
   border-radius: 20px;
-  overflow: hidden;
   box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  
+  /* Reset previous constraints so it grows naturally */
+  max-height: none; 
+  overflow: visible;
 }
+.modal-card::-webkit-scrollbar {
+  display: none;
+}
+
+
 .modal-header {
   padding: 1.25rem;
   border-bottom: 1px solid #f3f4f6;
@@ -325,33 +368,182 @@
   justify-content: space-between;
   align-items: center;
 }
-.modal-header h3 { margin: 0; font-size: 1.1rem; color: #111827; }
-.close-btn {
-  background: none; border: none; cursor: pointer; padding: 0.5rem;
-  border-radius: 50%; color: #6b7280;
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #111827;
 }
-.close-btn:hover { background: #f3f4f6; color: #111827; }
-.modal-body { padding: 1.5rem; }
-.worker-summary { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-.worker-modal-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-.worker-modal-placeholder { width: 64px; height: 64px; border-radius: 50%; background: #f3f4f6; color: #c19a5b; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; }
-.worker-summary h4 { margin: 0; font-size: 1.1rem; color: #111827; }
-.worker-summary p { margin: 0.25rem 0 0.5rem; font-size: 0.85rem; color: #6b7280; }
-.worker-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; background: #fafafa; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center; }
-.w-stat { display: flex; flex-direction: column; }
-.w-stat strong { font-size: 1.25rem; color: #c19a5b; }
-.w-stat span { font-size: 0.7rem; text-transform: uppercase; color: #9ca3af; }
-.worker-info-block { margin-bottom: 1rem; }
-.worker-info-block label { display: block; font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; font-weight: 600; margin-bottom: 0.25rem; }
-.worker-info-block p, .contact-line { font-size: 0.95rem; color: #374151; display: flex; align-items: center; gap: 0.5rem; }
-.contact-line svg { color: #c19a5b; }
-.fade-in { animation: fadeIn 0.4s ease-out forwards; }
-.fade-up { animation: fadeUp 0.3s ease-out forwards; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.profile-loading, .profile-error { display: flex; justify-content: center; align-items: center; min-height: 50vh; color: #6b7280; }
-.spinner { border: 3px solid #f3f4f6; border-top: 3px solid #c19a5b; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  color: #6b7280;
+}
+
+.close-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.worker-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.worker-modal-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.worker-modal-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #c19a5b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.worker-summary h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.worker-summary p {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.worker-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.w-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.w-stat strong {
+  font-size: 1.25rem;
+  color: #c19a5b;
+}
+
+.w-stat span {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.worker-info-block {
+  margin-bottom: 1rem;
+}
+
+.worker-info-block label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #9ca3af;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.worker-info-block p,
+.contact-line {
+  font-size: 0.95rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contact-line svg {
+  color: #c19a5b;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.fade-up {
+  animation: fadeUp 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-loading,
+.profile-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  color: #6b7280;
+}
+
+.spinner {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #c19a5b;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 /* Admin Avatar Image */
 .admin-avatar-large {
@@ -384,6 +576,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Added to clip the image */
-  flex-shrink: 0;   /* Prevent shrinking */
+  overflow: hidden;
+  /* Added to clip the image */
+  flex-shrink: 0;
+  /* Prevent shrinking */
 }
