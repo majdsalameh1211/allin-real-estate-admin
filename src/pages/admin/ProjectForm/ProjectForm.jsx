@@ -275,7 +275,7 @@ const UniversalForm = ({
       submitFormData.append('type', formData.type);
       submitFormData.append('status', formData.status);
       submitFormData.append('featured', formData.featured);
-      if (formData.badge) submitFormData.append('badge', formData.badge);
+      submitFormData.append('badge', formData.badge || '');
 
       // ✅ Add main image file (if new upload)
       if (mainImageFile) {

@@ -64,12 +64,14 @@ const AdminProjects = () => {
 
   const handleToggleFeatured = async (project) => {
     try {
+      // 🔴 FIX: Send ONLY the featured field, not the whole object.
+      // This prevents the backend from crashing on translation parsing.
       await api.put(`/projects/${project.id}`, {
-        ...project,
         featured: !project.featured
       });
+
       toast.success('Featured status updated!');
-      fetchProjects();
+      fetchProjects(); // Refresh the list
     } catch (error) {
       toast.error('Failed to update featured status');
       console.error(error);
@@ -149,7 +151,7 @@ const AdminProjects = () => {
                     <td className="font-semibold">
                       {project.title}
                       {project.badge && (
-                        <span className={`badge badge-${project.badge}`}>
+                        <span className={`badge-sample ${project.badge}`}>
                           {project.badge}
                         </span>
                       )}
@@ -173,12 +175,32 @@ const AdminProjects = () => {
                       </span>
                     </td>
                     <td>
+                      {/* Featured Column */}
                       <button
-                        className={`btn-icon ${project.featured ? 'featured' : ''}`}
+                        className="btn-icon"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
                         onClick={() => handleToggleFeatured(project)}
                         title={project.featured ? 'Remove from featured' : 'Mark as featured'}
                       >
-                        ⭐
+                        {project.featured ? (
+                          /* Active: Solid Gold Star */
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="#D4AF37" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                          </svg>
+                        ) : (
+                          /* Inactive: Gray Outline Star */
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                          </svg>
+                        )}
                       </button>
                     </td>
                     <td>

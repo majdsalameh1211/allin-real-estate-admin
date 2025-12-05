@@ -34,18 +34,16 @@ const ProjectFormPage = () => {
     }
   };
 
-  const handleSubmit = async (submitData) => {
+const handleSubmit = async (submitData) => {
     try {
-      const isFormData = submitData instanceof FormData;
-      const config = isFormData ? {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      } : {};
+      // 🔴 FIX: Do NOT manually set Content-Type for FormData.
+      // Axios detects FormData and sets the correct header + boundary automatically.
 
       if (isEditMode) {
-        await api.put(`/projects/${id}`, submitData, config);
+        await api.put(`/projects/${id}`, submitData);
         toast.success('Project updated successfully!');
       } else {
-        await api.post('/projects', submitData, config);
+        await api.post('/projects', submitData);
         toast.success('Project created successfully!');
       }
 
@@ -53,9 +51,13 @@ const ProjectFormPage = () => {
     } catch (error) {
       toast.error(isEditMode ? 'Failed to update project' : 'Failed to create project');
       console.error(error);
+      
+      // Optional: Log more details if it fails again
+      if (error.response) {
+        console.error("Server Error Details:", error.response.data);
+      }
     }
   };
-
   const handleCancel = () => {
     navigate('/admin/projects');
   };

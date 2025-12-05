@@ -259,20 +259,46 @@
 
 /* Mobile Cards Grid */
 .cards-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  /* gap: 2.5rem; <-- If this isn't working, we use margins below */
+  padding-bottom: 3rem;
 }
 
-/* Project Card */
 .project-card {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: all 0.3s ease;
+  border: 1px solid #f3f4f6;
+  width: 100%;
+  
+  /* 🔴 FORCE SPACING: Add margin to the bottom of every card */
+  margin-bottom: 2.5rem; 
 }
 
+/* Optional: Remove margin from the very last card */
+.project-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Mobile Feature Indicator (Task #5) */
+.featured-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #D4AF37; /* Gold */
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 .project-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
@@ -622,18 +648,27 @@
 
 /* Image Upload Styles */
 .image-drop-zone {
-  border: 2px dashed #d1d5db;
+  width: 100%;
+  height: 300px; /* 🔒 FIXED HEIGHT: Never changes */
+  border: 2px dashed #cbd5e1;
   border-radius: 12px;
-  padding: 2rem;
+  background-color: #f8fafc;
+  position: relative; /* Needed for absolute positioning of image */
+  
+  /* Centers the "Drag & Drop" text when empty */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  transition: all 0.3s ease;
-  background: #f9fafb;
-  margin-bottom: 1rem;
+  overflow: hidden; /* Ensures image doesn't spill out */
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .image-drop-zone:hover {
-  border-color: #d4af37;
-  background: rgba(212, 175, 55, 0.05);
+  border-color: #D4AF37; /* Gold on hover */
+  background-color: #fffbef;
 }
 
 .drop-zone-content {
@@ -669,39 +704,61 @@
   background: #c09a2e;
 }
 
+/* 2. The Preview Wrapper - Fills the container */
 .image-preview {
-  position: relative;
   width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
+  height: 100%;
+  position: absolute; /* Locks to top-left of container */
+  top: 0;
+  left: 0;
+  background: white;
 }
-
+/* 3. The Image Itself - Fills wrapper without stretching */
 .image-preview img {
   width: 100%;
-  height: auto;
-  border-radius: 8px;
+  height: 100%;
+  object-fit: cover; /* 🔑 MAGIC FIX: Crops image to fill space (like Gallery) */
+  display: block;
 }
 
+/* Small grid images */
+.image-preview-small {
+  width: 100%;
+  aspect-ratio: 1; /* Perfect square */
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.image-preview-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 🔑 KEY FIX */
+}
+
+/* 4. The Remove Button (X) */
 .btn-remove-image {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: rgba(239, 68, 68, 0.9);
-  color: white;
-  border: none;
-  border-radius: 50%;
+  top: 10px;
+  right: 10px;
   width: 32px;
   height: 32px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.9); /* Red */
+  color: white;
+  border: none;
   cursor: pointer;
-  font-size: 1.25rem;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
+  z-index: 10;
 }
-
 .btn-remove-image:hover {
-  background: #ef4444;
+  transform: scale(1.1);
+  background: #dc2626;
 }
 
 .form-divider {
@@ -735,24 +792,27 @@
   font-size: 0.875rem;
 }
 
+/* --- Gallery Images (Ensure they stay square) --- */
 .images-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 0.5rem;
 }
 
 .image-preview-small {
-  position: relative;
-  aspect-ratio: 1;
+  width: 100%;
+  aspect-ratio: 1; /* Force Square */
   border-radius: 8px;
   overflow: hidden;
+  position: relative;
+  border: 1px solid #e5e7eb;
 }
 
 .image-preview-small img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* 🔑 MAGIC FIX */
 }
 
 .image-drop-zone-small {
@@ -1033,3 +1093,76 @@
     padding: 0.1875rem 0.625rem;
   }
 }
+
+/* src/pages/admin/AdminProjects.css */
+
+@media (max-width: 850px) {
+  .cards-grid {
+    /* 1. Pull the grid left and right to cancel out parent padding */
+    margin-left: -1rem;  
+    margin-right: -1rem;
+    
+    /* 2. Force width to be wider than the container */
+    width: calc(100% + 2rem);
+    
+    /* 3. (Optional) Add small padding so cards don't touch the phone bezel */
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .project-card {
+    width: 100%;
+    /* Ensure the shadow doesn't get cut off */
+    margin-bottom: 2.5rem; 
+  }
+}
+
+/* --- Badge Styles (Matching ProjectForm) --- */
+
+/* Base Style */
+.badge-sample {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.70rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* 🟢 New Badge */
+.badge-sample.new {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+/* ⭐ Exclusive Badge */
+.badge-sample.exclusive {
+  background-color: #fffbef;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+/* ⚫ Sold Badge (Specific design for the Badge field) */
+.badge-sample.sold {
+  background-color: #1f2937;
+  color: #ffffff;
+  border: 1px solid #374151;
+}
+
+/* --- Standard Status/Type Badges (Keep these for the other columns) --- */
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-forSale { background: #eff6ff; color: #2563eb; }
+.badge-forRent { background: #fdf4ff; color: #c026d3; }
+.badge-active { background: #ecfdf5; color: #059669; }
+.badge-inactive { background: #fef2f2; color: #dc2626; }
