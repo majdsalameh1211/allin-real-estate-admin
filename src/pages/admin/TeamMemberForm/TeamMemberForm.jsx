@@ -13,7 +13,7 @@ const TeamMemberForm = () => {
   const [activeTab, setActiveTab] = useState('en');
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(false);
-  
+
   // File upload states
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -55,25 +55,25 @@ const TeamMemberForm = () => {
     }
   }, [id]);
 
-const fetchTeamMemberData = async () => {
-  try {
-    setFetchingData(true);
-    const response = await api.get(`/team/admin/${id}`);
-    // Backend returns member directly in response.data
-    const data = response.data;
-    setFormData(data);
-    
-    // Set existing image as preview
-    if (data.image) {
-      setImagePreview(data.image);
+  const fetchTeamMemberData = async () => {
+    try {
+      setFetchingData(true);
+      const response = await api.get(`/team/admin/${id}`);
+      // Backend returns member directly in response.data
+      const data = response.data;
+      setFormData(data);
+
+      // Set existing image as preview
+      if (data.image) {
+        setImagePreview(data.image);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to load team member');
+      navigate('/admin/team');
+    } finally {
+      setFetchingData(false);
     }
-  } catch (error) {
-    toast.error(error.response?.data?.error || 'Failed to load team member');
-    navigate('/admin/team');
-  } finally {
-    setFetchingData(false);
-  }
-};
+  };
 
   const handleInputChange = (lang, field, value) => {
     setFormData(prev => ({
@@ -147,7 +147,7 @@ const fetchTeamMemberData = async () => {
       }
 
       setImageFile(file);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -214,58 +214,58 @@ const fetchTeamMemberData = async () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!validateForm()) {
-    toast.error('Please fix the errors in the form');
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    // Build FormData for file upload
-    const data = new FormData();
-    
-    // Add image file if exists
-    if (imageFile) {
-      data.append('imageFile', imageFile);
-    }
-    
-    // Add image URL if no file (for URL-based images)
-    if (!imageFile && formData.image) {
-      data.append('image', formData.image);
-    }
-    
-    // Add other fields
-    data.append('translations', JSON.stringify(formData.translations));
-    data.append('email', formData.email);
-    data.append('phoneNumber', formData.phoneNumber || '');
-    data.append('licenseNumber', formData.licenseNumber);
-    data.append('licenseType', formData.licenseType);
-    data.append('order', formData.order.toString());
-    data.append('role', formData.role);
-    data.append('featured', formData.featured.toString());
-    data.append('active', formData.active.toString());
-    data.append('socialMedia', JSON.stringify(formData.socialMedia));
-    data.append('stats', JSON.stringify(formData.stats));
-
-    if (isEditMode) {
-      await updateTeamMember(id, data);
-      toast.success('Team member updated successfully!');
-    } else {
-      await createTeamMember(data);
-      toast.success('Team member created successfully!');
+    if (!validateForm()) {
+      toast.error('Please fix the errors in the form');
+      return;
     }
 
-    navigate('/admin/team');
-  } catch (error) {
-    toast.error(error.message || 'Failed to save team member');
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+
+      // Build FormData for file upload
+      const data = new FormData();
+
+      // Add image file if exists
+      if (imageFile) {
+        data.append('imageFile', imageFile);
+      }
+
+      // Add image URL if no file (for URL-based images)
+      if (!imageFile && formData.image) {
+        data.append('image', formData.image);
+      }
+
+      // Add other fields
+      data.append('translations', JSON.stringify(formData.translations));
+      data.append('email', formData.email);
+      data.append('phoneNumber', formData.phoneNumber || '');
+      data.append('licenseNumber', formData.licenseNumber);
+      data.append('licenseType', formData.licenseType);
+      data.append('order', formData.order.toString());
+      data.append('role', formData.role);
+      data.append('featured', formData.featured.toString());
+      data.append('active', formData.active.toString());
+      data.append('socialMedia', JSON.stringify(formData.socialMedia));
+      data.append('stats', JSON.stringify(formData.stats));
+
+      if (isEditMode) {
+        await updateTeamMember(id, data);
+        toast.success('Team member updated successfully!');
+      } else {
+        await createTeamMember(data);
+        toast.success('Team member created successfully!');
+      }
+
+      navigate('/admin/team');
+    } catch (error) {
+      toast.error(error.message || 'Failed to save team member');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (fetchingData) {
     return (
@@ -334,6 +334,7 @@ const handleSubmit = async (e) => {
             </p>
 
             <div className="form-row">
+              {/* ✅ RESTORED: Name Field */}
               <div className="form-group">
                 <label>Name <span className="required">*</span></label>
                 <input
@@ -349,6 +350,7 @@ const handleSubmit = async (e) => {
                 )}
               </div>
 
+              {/* Title Field should be right next to it or below it */}
               <div className="form-group">
                 <label>Title <span className="required">*</span></label>
                 <input
@@ -499,8 +501,13 @@ const handleSubmit = async (e) => {
                     type="button"
                     className="btn-remove-image"
                     onClick={handleRemoveImage}
+                    title="Remove Image"
                   >
-                    ✕ Remove Image
+                    {/* SVG for a clean white X */}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                   </button>
                 </div>
               ) : (
@@ -564,16 +571,7 @@ const handleSubmit = async (e) => {
             </div>
 
             <div className="form-row">
-              <div className="form-group">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={formData.featured}
-                    onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                  />
-                  Featured Member
-                </label>
-              </div>
+
 
               <div className="form-group">
                 <label className="checkbox-label">

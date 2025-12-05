@@ -313,18 +313,22 @@
 
 /* Mobile Cards Grid */
 .cards-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* Increased Gap */
+  padding-bottom: 3rem;
 }
 
-/* Team Member Card - Option 1: Horizontal Layout */
 .team-card {
   background: white;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: all 0.3s ease;
+  
+  /* 🔴 FORCE SPACING */
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .team-card:hover {

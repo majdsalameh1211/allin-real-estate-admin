@@ -101,7 +101,7 @@ const AdminTeam = () => {
           <h1>Team Members</h1>
           <p>Manage your real estate team</p>
         </div>
-        <button 
+        <button
           className="btn-primary"
           onClick={() => navigate('/admin/team/new')}
         >
@@ -135,7 +135,7 @@ const AdminTeam = () => {
                       <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                     </svg>
                     <p>No team members yet</p>
-                    <button 
+                    <button
                       className="btn-primary"
                       onClick={() => navigate('/admin/team/new')}
                     >
@@ -176,9 +176,6 @@ const AdminTeam = () => {
                     <span className={`status-badge ${member.active ? 'status-active' : 'status-inactive'}`}>
                       {member.active ? 'Active' : 'Inactive'}
                     </span>
-                    {member.featured && (
-                      <span className="featured-badge">⭐ Featured</span>
-                    )}
                   </td>
                   <td>
                     <div className="action-buttons">
@@ -194,10 +191,10 @@ const AdminTeam = () => {
                       </button>
                       <button
                         className="btn-icon btn-delete"
-                        onClick={() => setDeleteModal({ 
-                          show: true, 
-                          id: getMemberId(member), 
-                          name: getMemberName(member) 
+                        onClick={() => setDeleteModal({
+                          show: true,
+                          id: getMemberId(member),
+                          name: getMemberName(member)
                         })}
                         title="Delete"
                       >
@@ -222,7 +219,7 @@ const AdminTeam = () => {
               <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
             <p>No team members yet</p>
-            <button 
+            <button
               className="btn-primary"
               onClick={() => navigate('/admin/team/new')}
             >
@@ -278,9 +275,6 @@ const AdminTeam = () => {
                   <span className={`status-badge ${member.active ? 'status-active' : 'status-inactive'}`}>
                     {member.active ? 'Active' : 'Inactive'}
                   </span>
-                  {member.featured && (
-                    <span className="featured-badge">⭐ Featured</span>
-                  )}
                 </div>
               </div>
 
@@ -297,10 +291,10 @@ const AdminTeam = () => {
                 </button>
                 <button
                   className="btn-delete"
-                  onClick={() => setDeleteModal({ 
-                    show: true, 
-                    id: getMemberId(member), 
-                    name: getMemberName(member) 
+                  onClick={() => setDeleteModal({
+                    show: true,
+                    id: getMemberId(member),
+                    name: getMemberName(member)
                   })}
                 >
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
@@ -320,7 +314,7 @@ const AdminTeam = () => {
           <div className="modal-container" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Delete Team Member</h2>
-              <button 
+              <button
                 className="modal-close"
                 onClick={() => !deleting && setDeleteModal({ show: false, id: null, name: '' })}
                 disabled={deleting}
@@ -338,14 +332,14 @@ const AdminTeam = () => {
               <p className="warning-text">This will also permanently delete their profile image from storage. This action cannot be undone.</p>
             </div>
             <div className="modal-footer">
-              <button 
+              <button
                 className="btn-secondary"
                 onClick={() => setDeleteModal({ show: false, id: null, name: '' })}
                 disabled={deleting}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 className="btn-danger"
                 onClick={handleDelete}
                 disabled={deleting}
