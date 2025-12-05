@@ -1,18 +1,34 @@
 // src/pages/admin/AdminLogin.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { adminLogin } from '../../../services/api';
+import { adminLogin , isAuthenticated} from '../../../services/api';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+
+  // Check auth status immediately
+  const isAuth = isAuthenticated();
+
+  // Redirect if logged in
+  useEffect(() => {
+    if (isAuth) {
+      navigate('/admin', { replace: true });
+    }
+  }, [isAuth, navigate]);
+
   const [credentials, setCredentials] = useState({
     email: '',
     password: ''
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // 🔴 FIX: Stop rendering the form if redirecting
+  if (isAuth) {
+    return null;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
