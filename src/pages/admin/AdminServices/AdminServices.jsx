@@ -24,10 +24,11 @@ const AdminServices = () => {
     fetchServices();
   }, []);
 
-  const fetchServices = async () => {
+const fetchServices = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/services?lang=en');
+      // ✅ FIX: Request inactive services too
+      const response = await api.get('/services?lang=en&includeInactive=true');
       setServices(response.data);
     } catch (error) {
       toast.error('Failed to fetch services');

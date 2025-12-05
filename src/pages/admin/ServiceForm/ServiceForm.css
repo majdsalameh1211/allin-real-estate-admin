@@ -188,15 +188,20 @@
 /* Icon Preview */
 .icon-preview-container {
   position: relative;
-  width: 200px;
+  width: 100%;
+  height: 200px; /* 🔒 FIXED HEIGHT */
   margin: 0 auto;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+  overflow: hidden;
 }
 
 .icon-preview-image {
   width: 100%;
-  border-radius: 8px;
+  height: 100%;
+  object-fit: cover; /* 🔑 PREVENTS STRETCHING (Crops to fit) */
   display: block;
-  border: 2px solid #e5e7eb;
 }
 
 .btn-remove-icon {

@@ -213,20 +213,26 @@
 }
 
 /* Mobile Cards Grid */
+/* Mobile Cards Grid */
 .cards-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* Increased Gap */
+  padding-bottom: 3rem;
 }
 
-/* Service Card */
 .service-card {
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
+  
+  /* 🔴 FORCE SPACING */
+  margin-bottom: 2rem;
+  width: 100%;
 }
+
 
 .service-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
