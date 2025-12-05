@@ -139,14 +139,9 @@ const AdminTestimonials = () => {
                       {testimonial.text?.substring(0, 80)}...
                     </td>
                     <td>
-                      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        <span className={`badge badge-${testimonial.active ? 'active' : 'inactive'}`}>
-                          {testimonial.active ? 'Active' : 'Inactive'}
-                        </span>
-                        {testimonial.featured && (
-                          <span className="badge badge-featured">Featured</span>
-                        )}
-                      </div>
+                      <span className={`badge badge-${testimonial.active ? 'active' : 'inactive'}`}>
+                        {testimonial.active ? 'Active' : 'Inactive'}
+                      </span>
                     </td>
                     <td>
                       <div className="action-buttons">
@@ -187,15 +182,10 @@ const AdminTestimonials = () => {
                     <div className="testimonial-rating">
                       {renderStars(testimonial.rating)}
                     </div>
-
                     <div className="header-badges">
                       <span className={`badge badge-${testimonial.active ? 'active' : 'inactive'}`}>
                         {testimonial.active ? 'Active' : 'Inactive'}
                       </span>
-
-                      {testimonial.featured && (
-                        <span className="badge badge-featured">Featured</span>
-                      )}
                     </div>
                   </div>
                 </div>

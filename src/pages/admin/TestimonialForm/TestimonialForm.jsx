@@ -195,16 +195,7 @@ const TestimonialForm = ({ initialData, onSubmit, onCancel }) => {
             </label>
           </div>
 
-          <div className="form-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={formData.featured}
-                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-              />
-              Featured Testimonial
-            </label>
-          </div>
+
         </div>
       </div>
 
