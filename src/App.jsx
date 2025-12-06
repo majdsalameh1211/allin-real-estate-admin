@@ -18,12 +18,15 @@ import CourseFormPage from './pages/admin/CourseForm/CourseFormPage';
 import ProjectFormPage from './pages/admin/ProjectForm/ProjectFormPage';
 import ServiceFormPage from './pages/admin/ServiceForm/ServiceFormPage';
 import TestimonialFormPage from './pages/admin/TestimonialForm/TestimonialFormPage';
+import LeadDetailsPanel from './pages/admin/AdminLeads/LeadDetailsPanel';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+
   return (
+
     <>
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
 
@@ -77,6 +80,8 @@ function App() {
 
           {/* Leads */}
           <Route path="leads" element={<AdminLeads />} />
+          <Route path="leads/:id" element={<LeadDetailsPanel />} />
+
         </Route>
       </Routes>
     </>

@@ -655,6 +655,18 @@ export const getLead = async (id) => {
 };
 
 /**
+ * Get single lead by ID
+ */
+export const getLeadById = async (id) => {
+  try {
+    const response = await api.get(`/leads/admin/${id}`);
+    return response.data.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Failed to load lead');
+  }
+};
+
+/**
  * Create new lead manually (Superadmin only)
  */
 export const createLead = async (leadData) => {
@@ -695,13 +707,23 @@ export const deleteLead = async (id) => {
  */
 export const assignLead = async (id, teamMemberId) => {
   try {
+    console.log('📡 API assignLead called:');
+    console.log('   Lead ID:', id);
+    console.log('   Team Member ID:', teamMemberId);
+    console.log('   Payload:', { assignedTo: teamMemberId });
+    
     const response = await api.patch(`/leads/admin/${id}/assign`, { assignedTo: teamMemberId });
+    
+    console.log('✅ Assignment successful:', response.data);
     return response.data.data;
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Failed to assign lead');
+    console.error('❌ API Error Details:');
+    console.error('   Status:', error.response?.status);
+    console.error('   Data:', error.response?.data);
+    console.error('   Message:', error.response?.data?.error || error.response?.data?.message);
+    throw new Error(error.response?.data?.error || error.response?.data?.message || 'Failed to assign lead');
   }
 };
-
 /**
  * Mark lead as contacted
  */

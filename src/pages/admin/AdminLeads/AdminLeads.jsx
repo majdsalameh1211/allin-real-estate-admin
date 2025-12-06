@@ -1,593 +1,476 @@
-// src/pages/admin/AdminLeads/AdminLeads.jsx
-import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   getAllLeads, 
-  deleteLead,
-  getPublicTeamMembers,
-  getCurrentAdmin,
-  getAdminRole
+  getAdminUsers, 
+  getCurrentAdmin 
 } from '../../../services/api';
-import LeadDetailsPanel from './LeadDetailsPanel';
+import { 
+  Search, 
+  Filter, 
+  Star, 
+  Phone, 
+  Mail, 
+  Clock,
+  X,
+  ChevronDown
+} from 'lucide-react';
 import './AdminLeads.css';
-import DeleteConfirmModal from '../../global/DeleteConfirmModal/DeleteConfirmModal.jsx';
 
 const AdminLeads = () => {
-  const { searchQuery } = useOutletContext();
-
-  // ================= STATE =================
-  const [leads, setLeads] = useState([]); // Master List
-  const [filteredLeads, setFilteredLeads] = useState([]); // View List
-  const [loading, setLoading] = useState(true);
-  const [currentAdmin, setCurrentAdmin] = useState(null);
-  const [adminRole, setAdminRole] = useState(null);
+  const navigate = useNavigate();
+  const [admin, setAdmin] = useState(null);
+  
+  // Data states
+  const [allLeads, setAllLeads] = useState([]);
+  const [filteredLeads, setFilteredLeads] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
-  const [selectedLead, setSelectedLead] = useState(null);
-  const [showDetailsPanel, setShowDetailsPanel] = useState(false);
+  const [globalCounts, setGlobalCounts] = useState({
+    all: 0,
+    new: 0,
+    contacted: 0,
+    inProgress: 0,
+    closed: 0,
+    high: 0,
+    medium: 0,
+    low: 0
+  });
 
-    // Add state for delete confirmation
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
-
-  // NEW: Counts for the dropdowns
-  const [globalCounts, setGlobalCounts] = useState({ all: 0, mine: 0, unassigned: 0 });
-
-  // Filters
+  // Filter states
   const [filters, setFilters] = useState({
-    view: 'all', 
-    status: 'all',
-    inquiryType: 'all',
-    priority: 'all',
-    dateRange: 'all'
+    search: '',
+    status: '',
+    priority: '',
+    assignedTo: '',
+    startDate: '',
+    endDate: ''
   });
+  const [showMyLeadsOnly, setShowMyLeadsOnly] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  
+  // Mobile filter state
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  
+  // Loading states
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Stats
-  const [stats, setStats] = useState({
-    total: 0, new: 0, contacted: 0, inProgress: 0, closed: 0
-  });
+  // Calculate global counts (unaffected by filters)
+  const calculateGlobalCounts = (leads) => {
+    const counts = {
+      all: leads.length,
+      new: 0,
+      contacted: 0,
+      inProgress: 0,
+      closed: 0,
+      high: 0,
+      medium: 0,
+      low: 0
+    };
 
-  // ================= INITIAL SETUP =================
-  // Load admin info and team members on mount
-  useEffect(() => {
-    const admin = getCurrentAdmin();
-    const role = getAdminRole();
-    setCurrentAdmin(admin);
-    setAdminRole(role);
-    
-    loadTeamMembers();
-  }, []);
+    leads.forEach(lead => {
+      // Status counts
+      if (lead.status === 'new') counts.new++;
+      else if (lead.status === 'contacted') counts.contacted++;
+      else if (lead.status === 'in-progress') counts.inProgress++;
+      else if (lead.status === 'closed') counts.closed++;
 
-  const loadTeamMembers = async () => {
-    try {
-      const members = await getPublicTeamMembers();
-      setTeamMembers(members.filter(m => m.active));
-    } catch (error) {
-      console.error('Error loading team members:', error);
-    }
+      // Priority counts
+      if (lead.priority === 'high') counts.high++;
+      else if (lead.priority === 'medium') counts.medium++;
+      else if (lead.priority === 'low') counts.low++;
+    });
+
+    return counts;
   };
 
-  // ================= NEW LOGIC STARTS HERE =================
-
-  // 1. Fetch ALL data once when the component mounts (or admin changes)
+  // Fetch data
   useEffect(() => {
-    fetchAllData();
-  }, [currentAdmin]);
+    const storedAdmin = getCurrentAdmin();
+    if (storedAdmin) {
+      setAdmin(storedAdmin);
+      if (storedAdmin.role === 'admin') {
+        setShowMyLeadsOnly(true);
+      }
+    }
+  }, []);
 
-  const fetchAllData = async () => {
+  useEffect(() => {
+    fetchLeads();
+    fetchTeamMembers();
+  }, []);
+
+  const fetchLeads = async () => {
     try {
       setLoading(true);
-      // Force 'all' to bypass backend bugs and get everything
-      const data = await getAllLeads({ view: 'all' });
-      
-      setLeads(data);
-      setFilteredLeads(data);
-      calculateGlobalCounts(data);
-      calculateLocalStats(data);
-      
-    } catch (error) {
-      console.error('Error loading leads:', error);
-      toast.error('Failed to load leads');
-    } finally {
+      const data = await getAllLeads();
+      setAllLeads(data);
+      setGlobalCounts(calculateGlobalCounts(data));
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to load leads');
       setLoading(false);
     }
   };
 
-  // 2. Re-run filters whenever the user changes settings
+  const fetchTeamMembers = async () => {
+    try {
+      const members = await getAdminUsers();
+      setTeamMembers(members);
+    } catch (error) {
+      console.error('Failed to load team members');
+    }
+  };
+
+  // Apply filters
   useEffect(() => {
     applyFilters();
-  }, [filters, leads, searchQuery]);
+  }, [allLeads, filters, showMyLeadsOnly, admin, activeTab]);
 
-const applyFilters = () => {
-    if (leads.length === 0) return;
+  const applyFilters = () => {
+    let result = [...allLeads];
 
-    let result = [...leads]; // Start with Master List
-
-    // =========================================================
-    // 1. FILTER BY VIEW (My Leads / Unassigned / Specific Worker)
-    // =========================================================
-    
-    // Case A: My Leads
-    if (filters.view === 'mine') {
-      const myId = currentAdmin?.workerProfile?._id;
-      if (myId) {
-        result = result.filter(l => l.assignedTo?._id === myId);
-      } else {
-        result = [];
-      }
-    } 
-    // Case B: Unassigned
-    else if (filters.view === 'unassigned') {
-      result = result.filter(l => !l.assignedTo || !l.assignedTo._id);
-    } 
-    // Case C: Specific Worker (Superadmin Selection)
-    // If it's not 'all', 'mine', or 'unassigned', it MUST be a Worker ID
-    else if (filters.view !== 'all') {
-      const targetWorkerId = filters.view;
-      result = result.filter(l => l.assignedTo?._id === targetWorkerId);
-    }
-
-    // =========================================================
-    // 2. OTHER FILTERS
-    // =========================================================
-
-    // Filter by Status
-    if (filters.status !== 'all') {
-      result = result.filter(l => l.status === filters.status);
-    }
-
-    // Filter by Type
-    if (filters.inquiryType !== 'all') {
-      result = result.filter(l => l.inquiryType === filters.inquiryType);
-    }
-
-    // Filter by Priority
-    if (filters.priority !== 'all') {
-      result = result.filter(l => l.priority === filters.priority);
-    }
-
-    // Filter by Search
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+    // Admin role filter - show only assigned leads
+    if (admin && admin.role === 'admin' && showMyLeadsOnly) {
       result = result.filter(lead => 
-        lead.fullName.toLowerCase().includes(query) ||
-        lead.email.toLowerCase().includes(query) ||
-        lead.phoneNumber.includes(query) ||
-        lead.message.toLowerCase().includes(query)
+        lead.assignedTo && lead.assignedTo._id === admin._id
       );
     }
 
-    // Update UI and Stats
-    setFilteredLeads(result);
-    calculateLocalStats(result);
-  };
-  // 3. Helper Functions
-  const calculateLocalStats = (currentLeads) => {
-    setStats({
-      total: currentLeads.length,
-      new: currentLeads.filter(l => l.status === 'New').length,
-      contacted: currentLeads.filter(l => l.status === 'Contacted').length,
-      inProgress: currentLeads.filter(l => l.status === 'InProgress').length,
-      closed: currentLeads.filter(l => l.status === 'Closed').length
-    });
-  };
+    // Tab filter
+    if (activeTab !== 'all') {
+      result = result.filter(lead => lead.status === activeTab);
+    }
 
-  const calculateGlobalCounts = (allData) => {
-    const myWorkerId = currentAdmin?.workerProfile?._id;
-    setGlobalCounts({
-      all: allData.length,
-      mine: myWorkerId ? allData.filter(l => l.assignedTo?._id === myWorkerId).length : 0,
-      unassigned: allData.filter(l => !l.assignedTo || !l.assignedTo._id).length
-    });
-  };
+    // Search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      result = result.filter(lead =>
+        lead.fullName?.toLowerCase().includes(searchLower) ||
+        lead.email?.toLowerCase().includes(searchLower) ||
+        lead.phone?.toLowerCase().includes(searchLower)
+      );
+    }
 
-  const handleFilterChange = (filterName, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterName]: value
-    }));
-  };
+    // Status filter
+    if (filters.status) {
+      result = result.filter(lead => lead.status === filters.status);
+    }
 
-  const handleLeadUpdated = () => {
-    fetchAllData(); // Reload everything on update
-  };
-  
-  const handleViewLead = (lead) => {
-    setSelectedLead(lead);
-    setShowDetailsPanel(true);
-  };
+    // Priority filter
+    if (filters.priority) {
+      result = result.filter(lead => lead.priority === filters.priority);
+    }
 
-  const handleClosePanel = () => {
-    setShowDetailsPanel(false);
-    setSelectedLead(null);
-  };
-
-  const handleDeleteLead = async (leadId) => {
-
-
-    try {
-      await deleteLead(leadId);
-      toast.success('Lead deleted successfully');
-      
-      // FIX: Call fetchAllData instead of loadLeads/loadStats
-      setDeleteConfirm(null);
-      fetchAllData();
-      
-      if (selectedLead?._id === leadId) {
-        handleClosePanel();
+    // Assigned filter
+    if (filters.assignedTo) {
+      if (filters.assignedTo === 'unassigned') {
+        result = result.filter(lead => !lead.assignedTo);
+      } else {
+        result = result.filter(lead => 
+          lead.assignedTo && lead.assignedTo._id === filters.assignedTo
+        );
       }
-    } catch (error) {
-      toast.error(error.message || 'Failed to delete lead');
+    }
+
+    // Date range filter
+    if (filters.startDate) {
+      result = result.filter(lead => 
+        new Date(lead.createdAt) >= new Date(filters.startDate)
+      );
+    }
+    if (filters.endDate) {
+      result = result.filter(lead => 
+        new Date(lead.createdAt) <= new Date(filters.endDate)
+      );
+    }
+
+    setFilteredLeads(result);
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      search: '',
+      status: '',
+      priority: '',
+      assignedTo: '',
+      startDate: '',
+      endDate: ''
+    });
+    setActiveTab('all');
+    if (admin && admin.role === 'admin') {
+      setShowMyLeadsOnly(true);
+    } else {
+      setShowMyLeadsOnly(false);
     }
   };
 
-  // ================= UI HELPERS =================
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'New': return '🔴';
-      case 'Contacted': return '🟡';
-      case 'InProgress': return '🔵';
-      case 'Closed': return '🟢';
-      default: return '⚪';
-    }
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (filters.search) count++;
+    if (filters.status) count++;
+    if (filters.priority) count++;
+    if (filters.assignedTo) count++;
+    if (filters.startDate) count++;
+    if (filters.endDate) count++;
+    // Don't count showMyLeadsOnly for admins as it's their default
+    if (showMyLeadsOnly && admin?.role !== 'admin') count++;
+    return count;
   };
 
-  const getPriorityBadge = (priority) => {
-    switch (priority) {
-      case 'High': return 'priority-high';
-      case 'Medium': return 'priority-medium';
-      case 'Low': return 'priority-low';
-      default: return '';
-    }
+  const handleCardClick = (leadId) => {
+    navigate(`/admin/leads/${leadId}`);
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now - date);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-    const diffMinutes = Math.floor(diffTime / (1000 * 60));
-
-    if (diffMinutes < 60) return `${diffMinutes} min ago`;
-    if (diffHours < 24) return `${diffHours} hours ago`;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Yesterday';
     if (diffDays < 7) return `${diffDays} days ago`;
-    
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
-  const canEditLead = (lead) => {
-    if (adminRole === 'superadmin') return true;
-    
-    // Permission Fix: Check worker profile ID
-    const myWorkerId = currentAdmin?.workerProfile?._id;
-    if (adminRole === 'admin' && lead.assignedTo?._id === myWorkerId) return true;
-    
-    return false;
-  };
-
-  const canDeleteLead = () => {
-    return adminRole === 'superadmin';
+    return date.toLocaleDateString();
   };
 
   if (loading) {
     return (
-      <div className="admin-leads">
-        <div className="leads-loading">
-          <div className="spinner"></div>
-          <p>Loading leads...</p>
-        </div>
+      <div className="leads-loading">
+        <div className="spinner-large"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="leads-error">
+        <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="admin-leads">
+    <div className="admin-leads-page">
       {/* Header */}
       <div className="leads-header">
         <div>
-          <h1 className="leads-title">Leads Management</h1>
-          <p className="leads-subtitle">Manage and track all customer inquiries</p>
+          <h1>Lead Management</h1>
+          <p>Manage and track your real estate inquiries</p>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="leads-stats">
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-            </svg>
-          </div>
-          <div className="stat-content">
-            <p className="stat-label">Total Leads</p>
-            <p className="stat-value">{stats.total}</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="stat-content">
-            <p className="stat-label">New</p>
-            <p className="stat-value">{stats.new}</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="stat-content">
-            <p className="stat-label">In Progress</p>
-            <p className="stat-value">{stats.contacted + stats.inProgress}</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }}>
-            <svg fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-          </div>
-          <div className="stat-content">
-            <p className="stat-label">Closed</p>
-            <p className="stat-value">{stats.closed}</p>
-          </div>
-        </div>
+      {/* Search Bar - Always visible */}
+      <div className="leads-search-bar">
+        <Search size={20} className="search-icon" />
+        <input
+          type="text"
+          placeholder="Search leads by name, email, or phone..."
+          value={filters.search}
+          onChange={(e) => handleFilterChange('search', e.target.value)}
+          className="search-input"
+        />
       </div>
 
-      {/* Filters */}
-      <div className="leads-filters">
-        {/* View Filter */}
-        <div className="filter-group">
-          <label>View</label>
-          <select 
-            value={filters.view} 
-            onChange={(e) => handleFilterChange('view', e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Leads ({globalCounts.all})</option>
-            
-            {adminRole === 'admin' && (
-              <option value="mine">My Leads ({globalCounts.mine})</option>
-            )}
-            
-            <option value="unassigned">Unassigned ({globalCounts.unassigned})</option>
-            
-            {adminRole === 'superadmin' && teamMembers.length > 0 && (
-              <>
-                <option disabled>──────────</option>
-                {teamMembers.map(member => (
-                  <option key={member._id} value={member._id}>
-                    {member.translations.en.name}'s Leads
-                  </option>
-                ))}
-              </>
-            )}
-          </select>
+      {/* Mobile Filter Toggle Button */}
+      <button 
+        className="mobile-filter-toggle"
+        onClick={() => setFiltersExpanded(!filtersExpanded)}
+      >
+        <Filter size={18} />
+        <span>Filters</span>
+        {getActiveFilterCount() > 0 && (
+          <span className="filter-badge">{getActiveFilterCount()}</span>
+        )}
+        <ChevronDown 
+          size={16} 
+          style={{ 
+            transform: filtersExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s'
+          }} 
+        />
+      </button>
+
+      {/* Filters Section */}
+      <div className={`leads-filters ${filtersExpanded ? 'expanded' : ''}`}>
+        <div className="filter-dropdowns">
+          <div className="filter-group">
+            <label>Status</label>
+            <select
+              value={filters.status}
+              onChange={(e) => handleFilterChange('status', e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Status</option>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="in-progress">In Progress</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Priority</label>
+            <select
+              value={filters.priority}
+              onChange={(e) => handleFilterChange('priority', e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Priority</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Assigned To</label>
+            <select
+              value={filters.assignedTo}
+              onChange={(e) => handleFilterChange('assignedTo', e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Assignments</option>
+              <option value="unassigned">Unassigned</option>
+              {teamMembers.map((admin) => (
+                <option
+                  key={admin._id}
+                  value={admin._id}
+                >
+                  {admin.firstName} {admin.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Start Date</label>
+            <input
+              type="date"
+              value={filters.startDate}
+              onChange={(e) => handleFilterChange('startDate', e.target.value)}
+              className="filter-select"
+            />
+          </div>
+
+          <div className="filter-group">
+            <label>End Date</label>
+            <input
+              type="date"
+              value={filters.endDate}
+              onChange={(e) => handleFilterChange('endDate', e.target.value)}
+              className="filter-select"
+            />
+          </div>
         </div>
 
-        {/* Status Filter */}
-        <div className="filter-group">
-          <label>Status</label>
-          <select 
-            value={filters.status} 
-            onChange={(e) => handleFilterChange('status', e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Status</option>
-            <option value="New">🔴 New ({stats.new})</option>
-            <option value="Contacted">🟡 Contacted ({stats.contacted})</option>
-            <option value="InProgress">🔵 In Progress ({stats.inProgress})</option>
-            <option value="Closed">🟢 Closed ({stats.closed})</option>
-          </select>
-        </div>
+        {/* My Leads Toggle for Admins */}
+        {admin && admin.role === 'admin' && (
+          <label className="toggle-filter">
+            <input
+              type="checkbox"
+              checked={showMyLeadsOnly}
+              onChange={(e) => setShowMyLeadsOnly(e.target.checked)}
+            />
+            <span>My Leads Only</span>
+          </label>
+        )}
 
-        {/* Inquiry Type Filter */}
-        <div className="filter-group">
-          <label>Type</label>
-          <select 
-            value={filters.inquiryType} 
-            onChange={(e) => handleFilterChange('inquiryType', e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Types</option>
-            <option value="buying">Buying</option>
-            <option value="selling">Selling</option>
-            <option value="renting">Renting</option>
-            <option value="land">Land</option>
-            <option value="consulting">Consulting</option>
-          </select>
-        </div>
-
-        {/* Priority Filter */}
-        <div className="filter-group">
-          <label>Priority</label>
-          <select 
-            value={filters.priority} 
-            onChange={(e) => handleFilterChange('priority', e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Priorities</option>
-            <option value="High">🔥 High</option>
-            <option value="Medium">⭐ Medium</option>
-            <option value="Low">🔻 Low</option>
-          </select>
-        </div>
-
-        {/* Clear Filters */}
-        <button 
-          className="btn-clear-filters"
-          onClick={() => setFilters({ view: 'all', status: 'all', inquiryType: 'all', priority: 'all', dateRange: 'all' })}
-        >
-          Clear Filters
-        </button>
+        {/* Clear Filters Button */}
+        {getActiveFilterCount() > 0 && (
+          <button className="btn-clear-filters" onClick={clearAllFilters}>
+            <X size={16} />
+            Clear All Filters
+          </button>
+        )}
       </div>
 
-      {/* Desktop Table View */}
-      <div className="leads-table-container desktop-only">
-        <table className="leads-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Contact</th>
-              <th>Type</th>
-              <th>Assigned To</th>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredLeads.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="no-leads">
-                  <svg width="64" height="64" viewBox="0 0 20 20" fill="currentColor" opacity="0.3">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
-                  </svg>
-                  <p>No leads found</p>
-                </td>
-              </tr>
-            ) : (
-              filteredLeads.map(lead => (
-                <tr key={lead._id} className="lead-row">
-                  <td>
-                    <div className="lead-name">
-                      <strong>{lead.fullName}</strong>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="lead-contact">
-                      <div>{lead.email}</div>
-                      <div className="phone">{lead.phoneNumber}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className="inquiry-badge">{lead.inquiryType}</span>
-                  </td>
-                  <td>
-                    {lead.assignedTo ? (
-                      <span className="assigned-to">
-                        {lead.assignedTo.translations.en.name}
-                      </span>
-                    ) : (
-                      <span className="unassigned">Unassigned</span>
-                    )}
-                  </td>
-                  <td>
-                    <span className={`status-badge status-${lead.status.toLowerCase()}`}>
-                      {getStatusColor(lead.status)} {lead.status}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`priority-badge ${getPriorityBadge(lead.priority)}`}>
-                      {lead.priority}
-                    </span>
-                  </td>
-                  <td className="date-cell">
-                    {formatDate(lead.createdAt)}
-                  </td>
-                  <td>
-                    <div className="action-buttons">
-                      <button 
-                        className="btn-action btn-view"
-                        onClick={() => handleViewLead(lead)}
-                        title="View Details"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                      
-                      {canDeleteLead() && (
-                        <button 
-                          className="btn-action btn-delete"
-                          onClick={() => setDeleteConfirm({id:lead._id ,name:lead.translations?.en?.name || lead.fullName})}
-                          title="Delete Lead"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      {/* Status Tabs */}
+      <div className="status-tabs">
+        {[
+          { key: 'all', label: 'All Leads', count: globalCounts.all },
+          { key: 'new', label: 'New', count: globalCounts.new },
+          { key: 'contacted', label: 'Contacted', count: globalCounts.contacted },
+          { key: 'in-progress', label: 'In Progress', count: globalCounts.inProgress },
+          { key: 'closed', label: 'Closed', count: globalCounts.closed }
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`status-tab ${activeTab === tab.key ? 'active' : ''}`}
+          >
+            <span className="tab-label">{tab.label}</span>
+            <span className="tab-count">{tab.count}</span>
+          </button>
+        ))}
       </div>
 
-      {/* Mobile Card View */}
-      <div className="leads-cards mobile-only">
+      {/* Lead Cards Grid */}
+      <div className="leads-grid">
         {filteredLeads.length === 0 ? (
-          <div className="no-leads-card">
-            <svg width="64" height="64" viewBox="0 0 20 20" fill="currentColor" opacity="0.3">
-              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
-            </svg>
-            <p>No leads found</p>
+          <div className="no-leads">
+            <p>No leads found matching your criteria</p>
           </div>
         ) : (
-          filteredLeads.map(lead => (
-            <div key={lead._id} className="lead-card" onClick={() => handleViewLead(lead)}>
+          filteredLeads.map((lead) => (
+            <div
+              key={lead._id}
+              className="lead-card"
+              onClick={() => handleCardClick(lead._id)}
+            >
+              {/* Card Header */}
               <div className="card-header">
-                <div className="card-status">
-                  <span className={`status-badge status-${lead.status.toLowerCase()}`}>
-                    {getStatusColor(lead.status)} {lead.status}
-                  </span>
-                  <span className={`priority-badge ${getPriorityBadge(lead.priority)}`}>
-                    {lead.priority}
-                  </span>
+                <div className="card-header-left">
+                  <h3>{lead.fullName}</h3>
+                  <div className="card-badges">
+                    <span className={`status-badge status-${lead.status}`}>
+                      {lead.status.toUpperCase()}
+                    </span>
+                    {lead.priority === 'high' && (
+                      <Star size={16} fill="#c19a5b" color="#c19a5b" />
+                    )}
+                  </div>
                 </div>
-                <span className="card-date">{formatDate(lead.createdAt)}</span>
-              </div>
-              
-              <h3 className="card-name">{lead.fullName}</h3>
-              
-              <div className="card-contact">
-                <div className="contact-item">
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                  </svg>
-                  {lead.email}
-                </div>
-                <div className="contact-item">
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                  </svg>
-                  {lead.phoneNumber}
+                <div className="card-avatar">
+                  {lead.fullName.charAt(0).toUpperCase()}
                 </div>
               </div>
-              
-              <div className="card-info">
-                <span className="inquiry-badge">{lead.inquiryType}</span>
-                {lead.assignedTo ? (
-                  <span className="assigned-to">👤 {lead.assignedTo.translations.en.name}</span>
-                ) : (
-                  <span className="unassigned">Unassigned</span>
+
+              {/* Property Info */}
+              <div className="card-property">
+                <div className="property-label">Interested Property</div>
+                <div className="property-name">{lead.propertyInterest || 'Not specified'}</div>
+                {lead.budget && (
+                  <div className="property-budget">₪{lead.budget.toLocaleString()}</div>
                 )}
               </div>
-              
-              <div className="card-actions">
-                <button 
-                  className="btn-card-action"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewLead(lead);
-                  }}
-                >
+
+              {/* Contact Info */}
+              <div className="card-contact">
+                <div className="contact-item">
+                  <Mail size={14} />
+                  <span>{lead.email}</span>
+                </div>
+                <div className="contact-item">
+                  <Phone size={14} />
+                  <span>{lead.phone}</span>
+                </div>
+              </div>
+
+              {/* Card Footer */}
+              <div className="card-footer">
+                <div className="card-date">
+                  <Clock size={14} />
+                  <span>{formatDate(lead.createdAt)}</span>
+                </div>
+                <button className="btn-view-details" onClick={(e) => {
+                  e.stopPropagation();
+                  handleCardClick(lead._id);
+                }}>
                   View Details
                 </button>
               </div>
@@ -595,27 +478,6 @@ const applyFilters = () => {
           ))
         )}
       </div>
-
-      {/* Lead Details Side Panel (Desktop) or Full Page (Mobile) */}
-      {showDetailsPanel && selectedLead && (
-        <LeadDetailsPanel
-          lead={selectedLead}
-          onClose={handleClosePanel}
-          onUpdate={handleLeadUpdated}
-          teamMembers={teamMembers}
-          canEdit={canEditLead(selectedLead)}
-          canDelete={canDeleteLead()}
-          adminRole={adminRole}
-        />
-      )}
-            <DeleteConfirmModal
-        isOpen={!!deleteConfirm}
-        onClose={() => setDeleteConfirm(null)}
-        onConfirm={() => handleDeleteLead(deleteConfirm?.id)}
-        title="Delete Lead"
-        itemName={deleteConfirm?.name}
-        itemType="lead"
-      />
     </div>
   );
 };
